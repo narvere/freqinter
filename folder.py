@@ -10,14 +10,20 @@ full_path = f'{work_directory} docker-compose.yml'
 full_path_upd = f'{work_directory}docker-compose.yml'
 
 
-def remove_spase_from_filename():
+def remove_space_from_filename():
+    """
+    Remove space from file docker-compose
+    :return:
+    """
     global new_path
     print(full_path)
-    x = full_path.split('\\')[:-1]
-    x.append(full_path.split('\\')[-1].strip())
-    new_path = '\\'.join(x)
-    os.rename(full_path, new_path)
-
+    try:
+        x = full_path.split('\\')[:-1]
+        x.append(full_path.split('\\')[-1].strip())
+        new_path = '\\'.join(x)
+        os.rename(full_path, new_path)
+    except(Exception):
+        print("Docker-compose exist!")
 
 # files = os.listdir()
 # for file in files:
@@ -42,6 +48,17 @@ def create_directory():
         ['docker-compose', 'run', '--rm', 'freqtrade', 'create-userdir', '--userdir', 'user_data'],
         stdout=subprocess.PIPE)
     print(new_path2.stdout.decode())
+    print("Directory structure created!")
+
+
+def create_configuration():
+    """
+    Create configuration - Requires answering interactive questions
+    :return:
+    """
+    subprocess.run(['docker-compose', 'run', '--rm', 'freqtrade', 'new-config', '--config', 'user_data/config.json'])
+    print("Default configuration created!")
+    # print(config.stdout.decode())
 
 
 def get_docker_compose_file():
@@ -53,17 +70,23 @@ def get_docker_compose_file():
         result = subprocess.run(
             ['curl', docker_compose_url, '-o docker-compose.yml'], stdout=subprocess.PIPE)
         print(result.stdout.decode())
-        remove_spase_from_filename()
+        remove_space_from_filename()
         pull_image()
-        create_directory()
+        # create_directory()
+        # create_configuration()
+        print("Freqtrade installed!")
     else:
         print("docker-compose is exist")
 
 
-get_docker_compose_file()
+# get_docker_compose_file()
 
 
 def delete_docker_compose_file():
+    """
+    Function delete all docker-compose files in a dir.
+    :return:
+    """
     for file in os.listdir(work_directory):
         file_path = os.path.join(work_directory, file)
         try:
@@ -75,4 +98,9 @@ def delete_docker_compose_file():
         shutil.rmtree(work_directory)
 
 
-
+def open_docker_folder():
+    """
+    Open working dir
+    :return:
+    """
+    subprocess.run(['explorer', work_directory])
