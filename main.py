@@ -1,16 +1,14 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from tkinter import Tk, END, Text, Label, Frame, LabelFrame, Toplevel, IntVar, Checkbutton, Menu
+from tkinter.ttk import Entry, Button, Style
+from variables import *
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+root = Tk()
+root.geometry(main_window_geometry)
+root.resizable(width=False, height=False)
+root.title(title)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+
+
+root.mainloop()
