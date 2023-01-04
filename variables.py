@@ -12,3 +12,7 @@ button_default_configs = "Create default configs"
 button_reset_all = "Reset all user directory!"
 button_text_compose_up = "Docker-compose up!"
 button_text_compose_down = "Docker-compose down!"
+link_config = "C:/ft_userdata/user_data/config.json"
+link_strategy = "C:/ft_userdata/user_data/strategies/sample_strategy.py"
+url = 'http://127.0.0.1:8080/'
+url2 = 'https://github.com/freqtrade/freqtrade-strategies'
