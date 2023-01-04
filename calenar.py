@@ -21,6 +21,7 @@ def grad_date():
     else:
         date1 = '20' + user_date[2] + user_date[1] + '0' + user_date[0]
     print(date1)
+    return date1
 
     # date.config(text="Selected Date is: " + date1)
 

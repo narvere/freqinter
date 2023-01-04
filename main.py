@@ -6,13 +6,16 @@ from folder import get_docker_compose_file, delete_docker_compose_file, open_doc
     create_directory
 import subprocess
 import webbrowser
+from tkcalendar import Calendar
+from functools import partial
 
 
 def get_stock_data():
     # Run the docker-compose command and capture the output
     print(value_rip_menu.get())
     result = subprocess.run(
-        ["docker-compose", "run", "--rm", "freqtrade", "download-data", "--exchange", "binance", "-t", f"{value_rip_menu.get()}",
+        ["docker-compose", "run", "--rm", "freqtrade", "download-data", "--exchange", "binance", "-t",
+         f"{value_rip_menu.get()}",
          "--timerange=20221110-"], stdout=subprocess.PIPE)
 
     # Print the output
@@ -79,6 +82,45 @@ def open_config_file(lin):
     subprocess.run(['code', lin], shell=True)
 
 
+def open_setup_window(*event):
+    """
+    New window creation
+    :return:
+    """
+    # global frame_setup
+    # Create the new window
+    new_window = Toplevel(root)
+    # new_window.geometry(setup_window_geometry)
+    new_window.title("Setup - NH admin tool")
+    frame_setup = Frame(new_window)
+    # frame_setup.grid(row=0, column=0, columnspan=3, sticky="w", pady=10, padx=10)
+    new_window.geometry("400x400")
+
+    def grad_date():
+        user_date = cal.get_date().split('/')
+        date1 = '20' + user_date[2] + (user_date[0] if int(user_date[0]) >= 10 else "0" + user_date[0]) + \
+                (user_date[1] if int(user_date[1]) >= 10 else "0" + user_date[1])
+        print(date1)
+        new_window.destroy()
+        return date1
+
+    # Add Calendar
+    cal = Calendar(new_window, selectmode='day', year=2022, month=1, day=1)
+    lb = Label(new_window, text="grad_date")
+
+    cal.pack(pady=20)
+    lb.pack(pady=20)
+
+    # date.config(text="Selected Date is: " + date1)
+
+    # Add Button and Label
+    Button(new_window, text="Get Date",
+           command=grad_date).pack(pady=20)
+
+    date = Label(new_window, text="")
+    date.pack(pady=20)
+
+
 root = Tk()
 root.geometry(main_window_geometry)
 root.resizable(width=False, height=False)
@@ -92,7 +134,7 @@ os.chdir('C:\\ft_userdata')
 # Version variable creation
 version_var = StringVar()
 value_rip_menu = StringVar()
-version_var.set(my_version())
+# version_var.set(my_version())
 
 entry_date = Entry(root)
 
@@ -106,6 +148,7 @@ button_reset_all = Button(root, text=button_reset_all, command=create_directory)
 button_open_config = Button(root, text="Open config file", command=lambda: open_config_file(link_config))
 button_open_strategy = Button(root, text="Open sample_strategy file", command=lambda: open_config_file(link_strategy))
 button_get_data = Button(root, text="Get stock data", command=get_stock_data)
+button_date_from = Button(root, text="Date from", command=open_setup_window)
 
 label_url = Label(root, text='Freqtrade UI', fg='blue', cursor='hand2')
 label_url_strategies = Label(root, text='freqtrade-strategies', fg='blue', cursor='hand2')
@@ -131,8 +174,13 @@ label_url_strategies.grid(row=2, column=3)
 combo = Combobox(root, textvariable=value_rip_menu,
                  values=['1s', '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d',
                          '1w', '1M'])
-label_date.grid(row=3, column=0)
-entry_date.grid(row=3, column=1)
+# label_date.grid(row=3, column=0)
+value = "5552"
+entry_date.delete(0, 'end')
+entry_date.insert(0, value)
+
+entry_date.grid(row=3, column=0)
+button_date_from.grid(row=3, column=1)
 combo.grid(row=3, column=2)
 button_get_data.grid(row=3, column=3)
 
