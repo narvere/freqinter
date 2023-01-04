@@ -22,6 +22,7 @@ def remove_space_from_filename():
         x.append(full_path.split('\\')[-1].strip())
         new_path = '\\'.join(x)
         os.rename(full_path, new_path)
+        print("Docker-compose file name updated")
     except(Exception):
         print("Docker-compose exist!")
 
@@ -37,6 +38,7 @@ def pull_image():
     global new_path
     new_path = subprocess.run(['docker-compose', 'pull'], stdout=subprocess.PIPE)
     print(new_path.stdout.decode())
+    print("Image pulled")
 
 
 def create_directory():
@@ -92,10 +94,12 @@ def delete_docker_compose_file():
         try:
             if os.path.isfile(file_path):
                 os.unlink(file_path)
+                print("All files delited!")
         except Exception as e:
             print(e)
         # Delete not empty folder
         shutil.rmtree(work_directory)
+        print("All folders delited!")
 
 
 def open_docker_folder():
@@ -104,3 +108,4 @@ def open_docker_folder():
     :return:
     """
     subprocess.run(['explorer', work_directory])
+    print("Folder is opened")

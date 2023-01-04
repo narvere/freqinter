@@ -1,15 +1,10 @@
-import tkinter as tk
-import webbrowser
+import subprocess
+import os
 
-root = tk.Tk()
+# subprocess.run(["code", "C:/ft_userdata/user_data/config.json"])
+files = os.listdir()
+for file in files:
+    print(file)
 
+subprocess.run(['code', "C:/ft_userdata/user_data/config.json"], shell=True)
 
-def open_link(event):
-    webbrowser.open('http://127.0.0.1:8080/')
-
-
-label = tk.Label(root, text='Open link', fg='blue', cursor='hand2')
-label.pack()
-label.bind('<1>', open_link)
-
-root.mainloop()

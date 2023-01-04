@@ -19,6 +19,7 @@ def main_dir_creation():
     """
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
+        print("Working directory is created!")
 
 
 def my_version():
@@ -29,6 +30,7 @@ def my_version():
     version = subprocess.run(
         ['docker-compose', 'run', '--rm', 'freqtrade', '--version'],
         stdout=subprocess.PIPE)
+    print(version.stdout.decode() + "1")
     return f"Ver: {version.stdout.decode()}"
 
 
@@ -55,6 +57,8 @@ def docker_compose_down():
     except(Exception) as e:
         print(e)
 
+def open_config_file():
+    subprocess.run(['code', "C:/ft_userdata/user_data/config.json"], shell=True)
 
 root = Tk()
 root.geometry(main_window_geometry)
@@ -77,10 +81,12 @@ button_docker_compose_up = Button(root, text=button_text_compose_up, command=doc
 button_docker_compose_down = Button(root, text=button_text_compose_down, command=docker_compose_down)
 button_default_configs = Button(root, text=button_default_configs, command=create_configuration)
 button_reset_all = Button(root, text=button_reset_all, command=create_directory)
+button_open_config = Button(root, text="Open config file",
+                            command=open_config_file)
 label_url = Label(root, text='Freqtrade UI', fg='blue', cursor='hand2')
 
 label_version = Label(root, textvariable=version_var)
-my_version()
+# my_version()
 button_create_docker_compose.grid(row=0, column=0)
 button_delete_docker_compose.grid(row=0, column=1)
 button_open_docker_folder.grid(row=0, column=2)
@@ -89,7 +95,7 @@ button_docker_compose_up.grid(row=1, column=0)
 button_docker_compose_down.grid(row=1, column=1)
 button_default_configs.grid(row=1, column=2)
 button_reset_all.grid(row=1, column=3)
-
+button_open_config.grid(row=2, column=1)
 
 label_url.grid(row=2, column=0)
 label_url.bind('<1>', open_link)
