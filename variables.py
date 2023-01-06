@@ -1,6 +1,7 @@
 # pip install pyinstaller
 # pyinstaller main.py
-main_window_geometry = "700x500"
+# pyinstaller --hidden-import babel.numbers myscript.py
+main_window_geometry = "800x500"
 title = "Freqinter v1.0"
 folder_path = 'c:/ft_userdata'
 work_directory = 'C:\\ft_userdata\\'
@@ -20,3 +21,10 @@ button_text_config_file = "Open config file"
 button_text_sample_strategy = "Open sample_strategy file"
 button_text_get_data = "Get stock data"
 button_text_date = "Date from"
+button_text_open_strategy = "Open strategy"
+button_text_backtest = "Backtest!"
+button_text_replace_docker = "Replace docker-compose"
+button_text_restart_docker = "Docker-compose Down & UP"
+button_text_freqtrade_ui = 'Freqtrade UI'
+button_text_freqtrade_strategy = 'freqtrade-strategies'
+timeframes = ['1s', '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M']

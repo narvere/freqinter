@@ -10,6 +10,7 @@ from tkcalendar import Calendar
 import datetime
 import tkinter.messagebox as messagebox
 import docker
+import babel.numbers  # do not delete!
 
 # List of my strategy names
 strategy_list = []
@@ -75,6 +76,8 @@ def docker_compose_up():
     try:
         subprocess.run(['docker-compose', 'up', '-d'])
         print("Docker compose is started!")
+        freqtrade_run.set(check_freqtrade_docker())
+        docker_run.set(docker_version())
     except(Exception) as e:
         print(e)
 
@@ -87,6 +90,8 @@ def docker_compose_down():
     try:
         subprocess.run(['docker-compose', 'down'])
         print("Docker compose is stopped!")
+        freqtrade_run.set(check_freqtrade_docker())
+        docker_run.set(docker_version())
     except(Exception) as e:
         print(e)
 
@@ -232,13 +237,20 @@ def backtesting():
     :return:
     """
     # Define the command
-    command = f"docker-compose run --rm freqtrade backtesting --datadir user_data/data/binance --export trades --stake-amount 700 --strategy {combobox_strategies.get()} -i 5m --timerange=20221110-"
+    command = f"docker-compose run --rm freqtrade backtesting --datadir user_data/data/binance --export trades " \
+              f"--stake-amount {value_amount.get()} --strategy {combobox_strategies.get()} -i {value_rip_menu.get()} " \
+              f"--timerange={value_date.get()}-"
     print(combobox_strategies.get())
     # Run the command as a subprocess
     subprocess.run(command, shell=True)
 
 
 def update_docker_compose_file(file):
+    """
+    Update docker-compose if I want to change a Strategy
+    :param file:
+    :return:
+    """
     print(file)
     with open("C:\\ft_userdata\\docker-compose.yml", "r") as f:
         # Read the contents of the file into a list
@@ -254,9 +266,32 @@ def update_docker_compose_file(file):
 
 
 def restart_freqtrade():
+    """
+    Command, that restart working docker-compose
+    :return:
+    """
     print("start restart")
     subprocess.run(["docker-compose", "restart", "freqtrade"])
     print("finish restart")
+
+
+def check_freqtrade_docker():
+    try:
+        output = subprocess.run(['docker', 'ps'], check=True, stdout=subprocess.PIPE).stdout.decode('utf-8')
+        if 'freqtrade' in output:
+            # print("freqtrade is running")
+            return "freqtrade is running"
+        else:
+            # print("freqtrade isn't running")
+            return "freqtrade isn't running"
+    except subprocess.CalledProcessError:
+        return False
+
+
+def hyperopt():
+    command = f"docker-compose run --rm freqtrade hyperopt --enable-protections --strategy {selected_strategy.get()} --hyperopt-loss SharpeHyperOptLoss -i {value_rip_menu.get()} -e {value_epoch.get()}"
+
+    subprocess.run(command, shell=True)
 
 
 root = Tk()
@@ -276,12 +311,17 @@ os.chdir('C:\\ft_userdata')
 version_var = StringVar(root)
 value_rip_menu = StringVar(root)
 value_date = StringVar(root)
+value_amount = StringVar(root)
 selected_strategy = StringVar(root)
 selected_key = StringVar(root)
 docker_run = StringVar(root)
+freqtrade_run = StringVar(root)
 value_strategy = StringVar(root)
+value_epoch = StringVar(root)
 # version_var.set(my_version())
+
 docker_run.set(docker_version())
+freqtrade_run.set(check_freqtrade_docker())
 
 try:
     selected_strategy.set(strategy_list[0])
@@ -290,7 +330,12 @@ except:
 
 option_menu = OptionMenu(root, selected_strategy, *strategy_list)
 
+# Entries
 entry_date = Entry(root, textvariable=value_date)
+entry_date_backtesting = Entry(root, textvariable=value_date)
+entry_amount_backtesting = Entry(root, textvariable=value_amount)
+entry_hyperopt_epoch = Entry(root, textvariable=value_epoch)
+
 
 # Buttons
 button_create_docker_compose = Button(root, text=button_text_create, command=get_docker_compose_file)
@@ -304,18 +349,29 @@ button_open_config = Button(root, text=button_text_config_file, command=lambda: 
 button_open_strategy = Button(root, text=button_text_sample_strategy, command=lambda: open_config_file(link_strategy))
 button_get_data = Button(root, text=button_text_get_data, command=get_stock_data)
 button_date_from = Button(root, text=button_text_date, command=open_setup_window)
-button_test = Button(root, text="Open strategy", command=get_value)
-button_backtesting = Button(root, text="Backtaste!", command=backtesting)
-button_replace_docker = Button(root, text="Replace docker-compose",
+button_test = Button(root, text=button_text_open_strategy, command=get_value)
+button_backtesting = Button(root, text=button_text_backtest, command=backtesting)
+button_replace_docker = Button(root, text=button_text_replace_docker,
                                command=lambda: update_docker_compose_file(combobox_strategies.get()))
-button_restart = Button(root, text="Restart Freqtrade", command=restart_freqtrade)
+button_restart = Button(root, text=button_text_restart_docker, command=restart_freqtrade)
+button_date_backtest = Button(root, text=button_text_date, command=open_setup_window)
+button_hyperopt = Button(root, text="Hyperopt", command=hyperopt)
 
 # Labels
-label_url = Label(root, text='Freqtrade UI', fg='blue', cursor='hand2')
-label_url_strategies = Label(root, text='freqtrade-strategies', fg='blue', cursor='hand2')
-label_date = Label(root, text="Date from (20221023):")
+label_url = Label(root, text=button_text_freqtrade_ui, fg='blue', cursor='hand2')
+label_url_strategies = Label(root, text=button_text_freqtrade_strategy, fg='blue', cursor='hand2')
+# label_date = Label(root, text="Date from (20221023):")
 label_version = Label(root, textvariable=version_var)
 label_docker = Label(root, textvariable=docker_run)
+label_freqtrade = Label(root, textvariable=freqtrade_run)
+
+# Comboboxes
+combo = Combobox(root, textvariable=value_rip_menu, values=timeframes)
+combobox_strategies = Combobox(root, textvariable=selected_strategy, values=strategy_list)
+combobox_keys = Combobox(root, textvariable=selected_key, values=list(strategy_file_dist.keys()))
+combo_strategy = Combobox(root, textvariable=value_rip_menu, values=timeframes)
+combobox_strategies_hyperopt = Combobox(root, textvariable=selected_strategy, values=strategy_list)
+combo_strategy_hyperopt = Combobox(root, textvariable=value_rip_menu, values=timeframes)
 
 # my_version()
 
@@ -325,6 +381,7 @@ button_delete_docker_compose.grid(row=0, column=1)
 button_open_docker_folder.grid(row=0, column=2)
 # label_version.grid(row=0, column=3)
 label_docker.grid(row=0, column=3)
+label_freqtrade.grid(row=0, column=4)
 
 # ROW 1
 button_docker_compose_up.grid(row=1, column=0)
@@ -338,11 +395,6 @@ button_open_config.grid(row=2, column=1)
 button_open_strategy.grid(row=2, column=2)
 label_url_strategies.grid(row=2, column=3)
 
-combo = Combobox(root, textvariable=value_rip_menu,
-                 values=['1s', '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d',
-                         '1w', '1M'])
-combobox_strategies = Combobox(root, textvariable=selected_strategy, values=strategy_list)
-combobox_keys = Combobox(root, textvariable=selected_key, values=list(strategy_file_dist.keys()))
 # label_date.grid(row=3, column=0)
 
 # ROW 3
@@ -350,6 +402,7 @@ entry_date.grid(row=3, column=0)
 button_date_from.grid(row=3, column=1)
 combo.grid(row=3, column=2)
 button_get_data.grid(row=3, column=3)
+entry_date_backtesting.insert(END, button_text_date)
 
 # ROW 4
 combobox_keys.grid(row=4, column=0)
@@ -357,9 +410,23 @@ button_test.grid(row=4, column=1)
 
 # ROW 5
 combobox_strategies.grid(row=5, column=0)
-button_backtesting.grid(row=5, column=1)
-button_replace_docker.grid(row=5, column=2)
-button_restart.grid(row=5, column=3)
+entry_date_backtesting.grid(row=5, column=1)
+button_date_backtest.grid(row=5, column=2)
+combo_strategy.grid(row=5, column=3)
+entry_amount_backtesting.grid(row=5, column=4)
+button_backtesting.grid(row=5, column=5)
+entry_amount_backtesting.insert(END, '700')
+
+# ROW 6
+button_replace_docker.grid(row=6, column=0)
+button_restart.grid(row=6, column=1)
+
+# ROW 7
+combobox_strategies_hyperopt.grid(row=7, column=0)
+combo_strategy_hyperopt.grid(row=7, column=1)
+entry_hyperopt_epoch.grid(row=7, column=2)
+button_hyperopt.grid(row=7, column=3)
+entry_hyperopt_epoch.insert(END, 'Epoch int value')
 
 label_url.bind('<1>', open_link)
 label_url_strategies.bind('<1>', open_link0)

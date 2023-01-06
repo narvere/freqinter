@@ -1,11 +1,19 @@
+import subprocess
 
-with open("C:\\ft_userdata\\docker-compose.yml", "r") as f:
-    # Read the contents of the file into a list
-    lines = f.readlines()
+command = "docker-compose run --rm freqtrade hyperopt --config C:/ft_userdata/user_data/config.json --enable-protections --strategy SampleStrategy --hyperopt-loss SharpeHyperOptLoss -i 5m -e 10"
 
-# Replace the 28th element in the list with "29 row"
-lines[27] = '      --strategy NewStrategy\n'
 
-# Write the modified list to the file
-with open("C:\\ft_userdata\\docker-compose.yml", "w") as f:
-    f.writelines(lines)
+subprocess.run(command, shell=True)
+
+
+# def restart_freqtrade():
+#     """
+#     Command, that restart working docker-compose
+#     :return:
+#     """
+#     print("start restart")
+#     subprocess.run(["docker-compose", "restart", "freqtrade"])
+#     print("finish restart")
+#
+#
+# restart_freqtrade()
