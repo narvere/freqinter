@@ -1,6 +1,7 @@
 # Import Required Library
 from tkinter import *
 from tkcalendar import Calendar
+import datetime
 
 # Create Object
 root = Tk()
@@ -8,8 +9,10 @@ root = Tk()
 # Set geometry
 root.geometry("400x400")
 
+today = datetime.date.today()
+
 # Add Calendar
-cal = Calendar(root, selectmode='day', year=2022, month=1, day=1)
+cal = Calendar(root, selectmode='day', year=2023, month=1, day=1)
 
 cal.pack(pady=20)
 

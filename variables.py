@@ -16,3 +16,7 @@ link_config = "C:/ft_userdata/user_data/config.json"
 link_strategy = "C:/ft_userdata/user_data/strategies/sample_strategy.py"
 url = 'http://127.0.0.1:8080/'
 url2 = 'https://github.com/freqtrade/freqtrade-strategies'
+button_text_config_file = "Open config file"
+button_text_sample_strategy = "Open sample_strategy file"
+button_text_get_data = "Get stock data"
+button_text_date = "Date from"
