@@ -215,7 +215,11 @@ def get_value():
     print(value)
 
 
+docker_condition = False
+
+
 def docker_version():
+    global docker_condition
     """
     Docker is working?
     :return:
@@ -226,9 +230,11 @@ def docker_version():
     # Check if Docker is running
     if client.ping():
         print("Docker is running")
+        docker_condition = True
         return "Docker is running"
     else:
         print("Docker is not running")
+
         return "Docker is not running"
 
 
@@ -276,11 +282,16 @@ def restart_freqtrade():
     print("finish restart")
 
 
+freqtrade_condition = False
+
+
 def check_freqtrade_docker():
+    global freqtrade_condition
     try:
         output = subprocess.run(['docker', 'ps'], check=True, stdout=subprocess.PIPE).stdout.decode('utf-8')
         if 'freqtrade' in output:
             # print("freqtrade is running")
+            freqtrade_condition = True
             return "freqtrade is running"
         else:
             # print("freqtrade isn't running")
@@ -332,8 +343,14 @@ root.resizable(width=False, height=False)
 root.title(title)
 
 # Frames
-frame_keepass = LabelFrame(root, text="Docker operations")
-frame_keepass.grid(row=0, column=0)
+frame_docker = LabelFrame(root, text="Docker operations")
+frame_docker.grid(row=0, column=0, columnspan=3, padx=10, pady=5, rowspan=2)
+frame_docker_min_columnsize = 140
+frame_docker.grid_columnconfigure(0, minsize=frame_docker_min_columnsize)
+frame_docker.grid_columnconfigure(1, minsize=frame_docker_min_columnsize)
+frame_docker.grid_columnconfigure(2, minsize=frame_docker_min_columnsize)
+frame_docker.grid_columnconfigure(3, minsize=frame_docker_min_columnsize)
+# frame_docker.grid_columnconfigure(4, minsize=frame_docker_min_columnsize)
 try:
     main_dir_creation()
     get_my_strategies()
@@ -375,13 +392,14 @@ entry_hyperopt_epoch = Entry(root, textvariable=value_epoch)
 entry_new_strategy_name = Entry(root, textvariable=value_new_name)
 
 # Buttons
-button_create_docker_compose = Button(root, text=button_text_create, command=get_docker_compose_file)
-button_delete_docker_compose = Button(root, text=button_text_delete, command=delete_docker_compose_file)
-button_open_docker_folder = Button(root, text=button_test_open_folder, command=open_docker_folder)
-button_docker_compose_up = Button(root, text=button_text_compose_up, command=docker_compose_up)
-button_docker_compose_down = Button(root, text=button_text_compose_down, command=docker_compose_down)
-button_default_configs = Button(root, text=button_default_configs, command=create_configuration)
-button_reset_all = Button(root, text=button_reset_all, command=create_directory)
+button_create_docker_compose = Button(frame_docker, text=button_text_create, command=get_docker_compose_file)
+button_delete_docker_compose = Button(frame_docker, text=button_text_delete, command=delete_docker_compose_file)
+button_open_docker_folder = Button(frame_docker, text=button_test_open_folder, command=open_docker_folder)
+button_docker_compose_up = Button(frame_docker, text=button_text_compose_up, command=docker_compose_up)
+button_docker_compose_down = Button(frame_docker, text=button_text_compose_down, command=docker_compose_down)
+button_default_configs = Button(frame_docker, text=button_default_configs, command=create_configuration,
+                                background='#92f095')
+button_reset_all = Button(frame_docker, text=button_reset_all, command=create_directory, background='#f28174')
 button_open_config = Button(root, text=button_text_config_file, command=lambda: open_config_file(link_config))
 button_open_strategy = Button(root, text=button_text_sample_strategy, command=lambda: open_config_file(link_strategy))
 button_get_data = Button(root, text=button_text_get_data, command=get_stock_data)
@@ -390,7 +408,7 @@ button_test = Button(root, text=button_text_open_strategy, command=get_value)
 button_backtesting = Button(root, text=button_text_backtest, command=backtesting)
 button_replace_docker = Button(root, text=button_text_replace_docker,
                                command=lambda: update_docker_compose_file(combobox_strategies.get()))
-button_restart = Button(root, text=button_text_restart_docker, command=restart_freqtrade)
+button_restart = Button(frame_docker, text=button_text_restart_docker, command=restart_freqtrade)
 button_date_backtest = Button(root, text=button_text_date, command=open_setup_window)
 button_hyperopt = Button(root, text="Hyperopt", command=hyperopt)
 button_add_new_strategy = Button(root, text="Add new strategy",
@@ -403,9 +421,15 @@ label_url = Label(root, text=button_text_freqtrade_ui, fg='blue', cursor='hand2'
 label_url_strategies = Label(root, text=button_text_freqtrade_strategy, fg='blue', cursor='hand2')
 # label_date = Label(root, text="Date from (20221023):")
 label_version = Label(root, textvariable=version_var)
-label_docker = Label(root, textvariable=docker_run)
-label_freqtrade = Label(root, textvariable=freqtrade_run)
+if docker_condition:
+    label_docker = Label(root, textvariable=docker_run, fg="green", font=['Arial', 15, 'bold'])
+else:
+    label_docker = Label(root, textvariable=docker_run, fg="red", font=['Arial', 15, 'bold'])
 
+if freqtrade_condition:
+    label_freqtrade = Label(root, textvariable=freqtrade_run, fg="green", font=['Arial', 15, 'bold'])
+else:
+    label_freqtrade = Label(root, textvariable=freqtrade_run, fg="red", font=['Arial', 15, 'bold'])
 # Comboboxes
 combo = Combobox(root, textvariable=value_rip_menu, values=timeframes)
 combobox_strategies = Combobox(root, textvariable=selected_strategy, values=strategy_list)
@@ -415,20 +439,22 @@ combobox_strategies_hyperopt = Combobox(root, textvariable=selected_strategy, va
 combo_strategy_hyperopt = Combobox(root, textvariable=value_rip_menu, values=timeframes)
 
 # my_version()
-
+# Frame Docker operations
 # ROW 0
-button_create_docker_compose.grid(row=0, column=0)
-button_delete_docker_compose.grid(row=0, column=1)
-button_open_docker_folder.grid(row=0, column=2)
+button_create_docker_compose.grid(row=0, column=0, sticky="we", padx=3, pady=3)
+button_delete_docker_compose.grid(row=0, column=1, sticky="we", padx=3, pady=3)
+button_open_docker_folder.grid(row=0, column=2, sticky="we", padx=3, pady=3)
+button_reset_all.grid(row=0, column=3, sticky="we", padx=3, pady=3)
 # label_version.grid(row=0, column=3)
-label_docker.grid(row=0, column=3)
-label_freqtrade.grid(row=0, column=4)
 
 # ROW 1
-button_docker_compose_up.grid(row=1, column=0)
-button_docker_compose_down.grid(row=1, column=1)
-button_default_configs.grid(row=1, column=2)
-button_reset_all.grid(row=1, column=3)
+button_docker_compose_up.grid(row=1, column=0, sticky="we", padx=3, pady=3)
+button_docker_compose_down.grid(row=1, column=1, sticky="we", padx=3, pady=3)
+button_restart.grid(row=1, column=2, sticky="we", padx=3, pady=3)
+button_default_configs.grid(row=1, column=3, sticky="we", padx=3, pady=3)
+
+label_docker.grid(row=0, column=3)
+label_freqtrade.grid(row=1, column=3)
 
 # ROW 2
 label_url.grid(row=2, column=0)
@@ -463,7 +489,6 @@ entry_amount_backtesting.insert(END, '700')
 
 # ROW 6
 button_replace_docker.grid(row=6, column=0)
-button_restart.grid(row=6, column=1)
 
 # ROW 7
 combobox_strategies_hyperopt.grid(row=7, column=0)
