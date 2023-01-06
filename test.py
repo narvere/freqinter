@@ -1,19 +1,21 @@
-import subprocess
+import shutil
+from variables import link_strategy, folder_path
+import os.path
 
-command = "docker-compose run --rm freqtrade hyperopt --config C:/ft_userdata/user_data/config.json --enable-protections --strategy SampleStrategy --hyperopt-loss SharpeHyperOptLoss -i 5m -e 10"
+name = "deniss_test1"
 
+if os.path.exists(folder_path + "/user_data/strategies/" + name + ".py"):
+    # File exists
+    print("File exists")
+else:
+    # File does not exist
+    shutil.copy(link_strategy, folder_path + "/user_data/strategies/" + name + ".py")
+    print(f"Стратегия {name} создана!")
 
-subprocess.run(command, shell=True)
+    with open(folder_path + "/user_data/strategies/" + name + ".py", 'r') as f:
+        lines = f.readlines()
 
+    lines[19] = f'class {name}(IStrategy):\n'
 
-# def restart_freqtrade():
-#     """
-#     Command, that restart working docker-compose
-#     :return:
-#     """
-#     print("start restart")
-#     subprocess.run(["docker-compose", "restart", "freqtrade"])
-#     print("finish restart")
-#
-#
-# restart_freqtrade()
+    with open(folder_path + "/user_data/strategies/" + name + ".py", 'w') as f:
+        f.writelines(lines)

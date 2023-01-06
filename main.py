@@ -1,5 +1,5 @@
-from tkinter import Tk, END, Text, Label, Frame, LabelFrame, Toplevel, IntVar, Checkbutton, Menu, StringVar
-from tkinter.ttk import Entry, Button, Style, Combobox, OptionMenu
+from tkinter import Tk, END, Text, Label, Frame, LabelFrame, Toplevel, IntVar, Checkbutton, Menu, StringVar, Button
+from tkinter.ttk import Entry, Style, Combobox, OptionMenu
 from variables import *
 import os
 from folder import get_docker_compose_file, delete_docker_compose_file, open_docker_folder, create_configuration, \
@@ -11,6 +11,7 @@ import datetime
 import tkinter.messagebox as messagebox
 import docker
 import babel.numbers  # do not delete!
+import shutil
 
 # List of my strategy names
 strategy_list = []
@@ -294,10 +295,45 @@ def hyperopt():
     subprocess.run(command, shell=True)
 
 
+def add_strategy(name):
+    if os.path.exists(folder_path + "/user_data/strategies/" + name + ".py"):
+        # File exists
+        print("File exists")
+    else:
+        # File does not exist
+        shutil.copy(link_strategy, folder_path + "/user_data/strategies/" + name + ".py")
+        # get_my_strategies()
+        # get_my_strategies_dict()
+        print(f"Стратегия {name} создана!")
+
+        with open(folder_path + "/user_data/strategies/" + name + ".py", 'r') as f:
+            lines = f.readlines()
+
+        lines[19] = f'class {name}(IStrategy):\n'
+
+        with open(folder_path + "/user_data/strategies/" + name + ".py", 'w') as f:
+            f.writelines(lines)
+
+
+def delete_item(name):
+    # Delete the selected item from the ComboBox
+
+    file_path = folder_path + "/user_data/strategies/" + name
+    print(file_path)
+    os.remove(file_path)
+
+
+# def delete_strategy():
+#     pass
+
 root = Tk()
 root.geometry(main_window_geometry)
 root.resizable(width=False, height=False)
 root.title(title)
+
+# Frames
+frame_keepass = LabelFrame(root, text="Docker operations")
+frame_keepass.grid(row=0, column=0)
 try:
     main_dir_creation()
     get_my_strategies()
@@ -318,6 +354,7 @@ docker_run = StringVar(root)
 freqtrade_run = StringVar(root)
 value_strategy = StringVar(root)
 value_epoch = StringVar(root)
+value_new_name = StringVar(root)
 # version_var.set(my_version())
 
 docker_run.set(docker_version())
@@ -335,7 +372,7 @@ entry_date = Entry(root, textvariable=value_date)
 entry_date_backtesting = Entry(root, textvariable=value_date)
 entry_amount_backtesting = Entry(root, textvariable=value_amount)
 entry_hyperopt_epoch = Entry(root, textvariable=value_epoch)
-
+entry_new_strategy_name = Entry(root, textvariable=value_new_name)
 
 # Buttons
 button_create_docker_compose = Button(root, text=button_text_create, command=get_docker_compose_file)
@@ -356,6 +393,10 @@ button_replace_docker = Button(root, text=button_text_replace_docker,
 button_restart = Button(root, text=button_text_restart_docker, command=restart_freqtrade)
 button_date_backtest = Button(root, text=button_text_date, command=open_setup_window)
 button_hyperopt = Button(root, text="Hyperopt", command=hyperopt)
+button_add_new_strategy = Button(root, text="Add new strategy",
+                                 command=lambda: add_strategy(entry_new_strategy_name.get()))
+button_delete_strategy = Button(root, text="Delete strategy", command=lambda: delete_item(selected_key.get()),
+                                background='#f28174')
 
 # Labels
 label_url = Label(root, text=button_text_freqtrade_ui, fg='blue', cursor='hand2')
@@ -407,6 +448,9 @@ entry_date_backtesting.insert(END, button_text_date)
 # ROW 4
 combobox_keys.grid(row=4, column=0)
 button_test.grid(row=4, column=1)
+button_delete_strategy.grid(row=4, column=2)
+entry_new_strategy_name.grid(row=4, column=3)
+button_add_new_strategy.grid(row=4, column=4)
 
 # ROW 5
 combobox_strategies.grid(row=5, column=0)
