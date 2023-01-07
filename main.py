@@ -18,6 +18,7 @@ strategy_list = []
 # Dictionary with my strategy file names as key and my strategy file path as value
 strategy_file_dist = {}
 
+
 # test
 def get_stock_data():
     """
@@ -344,12 +345,45 @@ root.title(title)
 
 # Frames
 frame_docker = LabelFrame(root, text="Docker operations")
+frame_config = LabelFrame(root, text="Config zone")
+frame_stock_data = LabelFrame(root, text="Stock data")
+frame_my_srategies = LabelFrame(root, text="My strategies")
+frame_backtest = LabelFrame(root, text="Backtest")
+frame_hyperopt = LabelFrame(root, text="Hyperopt")
+
 frame_docker.grid(row=0, column=0, columnspan=3, padx=10, pady=5, rowspan=2)
-frame_docker_min_columnsize = 140
+frame_config.grid(row=2, column=0, columnspan=3, padx=10)
+frame_stock_data.grid(row=3, column=0, columnspan=3, padx=10)
+frame_my_srategies.grid(row=4, column=0, columnspan=5, padx=10, sticky="w")
+frame_backtest.grid(row=5, column=0, rowspan=2, columnspan=5, padx=10, sticky="w")
+frame_hyperopt.grid(row=7, column=0, columnspan=3, padx=10)
+
+frame_docker_min_columnsize = 172
 frame_docker.grid_columnconfigure(0, minsize=frame_docker_min_columnsize)
 frame_docker.grid_columnconfigure(1, minsize=frame_docker_min_columnsize)
 frame_docker.grid_columnconfigure(2, minsize=frame_docker_min_columnsize)
 frame_docker.grid_columnconfigure(3, minsize=frame_docker_min_columnsize)
+frame_config.grid_columnconfigure(0, minsize=frame_docker_min_columnsize)
+frame_config.grid_columnconfigure(1, minsize=frame_docker_min_columnsize)
+frame_config.grid_columnconfigure(2, minsize=frame_docker_min_columnsize)
+frame_config.grid_columnconfigure(3, minsize=frame_docker_min_columnsize)
+frame_stock_data.grid_columnconfigure(0, minsize=frame_docker_min_columnsize)
+frame_stock_data.grid_columnconfigure(1, minsize=frame_docker_min_columnsize)
+frame_stock_data.grid_columnconfigure(2, minsize=frame_docker_min_columnsize)
+frame_stock_data.grid_columnconfigure(3, minsize=frame_docker_min_columnsize)
+frame_my_srategies.grid_columnconfigure(0, minsize=frame_docker_min_columnsize)
+frame_my_srategies.grid_columnconfigure(1, minsize=100)
+frame_my_srategies.grid_columnconfigure(2, minsize=135)
+frame_my_srategies.grid_columnconfigure(3, minsize=frame_docker_min_columnsize)
+frame_backtest.grid_columnconfigure(0, minsize=158)
+frame_backtest.grid_columnconfigure(1, minsize=158)
+frame_backtest.grid_columnconfigure(2, minsize=158)
+frame_backtest.grid_columnconfigure(3, minsize=150)
+frame_hyperopt.grid_columnconfigure(0, minsize=frame_docker_min_columnsize)
+frame_hyperopt.grid_columnconfigure(1, minsize=frame_docker_min_columnsize)
+frame_hyperopt.grid_columnconfigure(2, minsize=frame_docker_min_columnsize)
+frame_hyperopt.grid_columnconfigure(3, minsize=frame_docker_min_columnsize)
+# frame_backtest.grid_columnconfigure(4, minsize=frame_docker_min_columnsize)
 # frame_docker.grid_columnconfigure(4, minsize=frame_docker_min_columnsize)
 try:
     main_dir_creation()
@@ -385,11 +419,11 @@ except:
 option_menu = OptionMenu(root, selected_strategy, *strategy_list)
 
 # Entries
-entry_date = Entry(root, textvariable=value_date)
-entry_date_backtesting = Entry(root, textvariable=value_date)
-entry_amount_backtesting = Entry(root, textvariable=value_amount)
-entry_hyperopt_epoch = Entry(root, textvariable=value_epoch)
-entry_new_strategy_name = Entry(root, textvariable=value_new_name)
+entry_date = Entry(frame_stock_data, textvariable=value_date)
+entry_date_backtesting = Entry(frame_backtest, textvariable=value_date)
+entry_amount_backtesting = Entry(frame_backtest, textvariable=value_amount)
+entry_hyperopt_epoch = Entry(frame_hyperopt, textvariable=value_epoch)
+entry_new_strategy_name = Entry(frame_my_srategies, textvariable=value_new_name)
 
 # Buttons
 button_create_docker_compose = Button(frame_docker, text=button_text_create, command=get_docker_compose_file)
@@ -400,43 +434,47 @@ button_docker_compose_down = Button(frame_docker, text=button_text_compose_down,
 button_default_configs = Button(frame_docker, text=button_default_configs, command=create_configuration,
                                 background='#92f095')
 button_reset_all = Button(frame_docker, text=button_reset_all, command=create_directory, background='#f28174')
-button_open_config = Button(root, text=button_text_config_file, command=lambda: open_config_file(link_config))
-button_open_strategy = Button(root, text=button_text_sample_strategy, command=lambda: open_config_file(link_strategy))
-button_get_data = Button(root, text=button_text_get_data, command=get_stock_data)
-button_date_from = Button(root, text=button_text_date, command=open_setup_window)
-button_test = Button(root, text=button_text_open_strategy, command=get_value)
-button_backtesting = Button(root, text=button_text_backtest, command=backtesting)
-button_replace_docker = Button(root, text=button_text_replace_docker,
-                               command=lambda: update_docker_compose_file(combobox_strategies.get()))
 button_restart = Button(frame_docker, text=button_text_restart_docker, command=restart_freqtrade)
-button_date_backtest = Button(root, text=button_text_date, command=open_setup_window)
-button_hyperopt = Button(root, text="Hyperopt", command=hyperopt)
-button_add_new_strategy = Button(root, text="Add new strategy",
+button_open_config = Button(frame_config, text=button_text_config_file, command=lambda: open_config_file(link_config))
+button_open_strategy = Button(frame_config, text=button_text_sample_strategy,
+                              command=lambda: open_config_file(link_strategy))
+button_get_data = Button(frame_stock_data, text=button_text_get_data, command=get_stock_data)
+button_date_from = Button(frame_stock_data, text=button_text_date, command=open_setup_window)
+button_test = Button(frame_my_srategies, text=button_text_open_strategy, command=get_value)
+button_backtesting = Button(frame_backtest, text=button_text_backtest, command=backtesting)
+button_replace_docker = Button(frame_backtest, text=button_text_replace_docker,
+                               command=lambda: update_docker_compose_file(combobox_strategies.get()))
+
+button_date_backtest = Button(frame_backtest, text=button_text_date, command=open_setup_window)
+button_hyperopt = Button(frame_hyperopt, text="Hyperopt", command=hyperopt)
+button_add_new_strategy = Button(frame_my_srategies, text="Add new strategy",
                                  command=lambda: add_strategy(entry_new_strategy_name.get()))
-button_delete_strategy = Button(root, text="Delete strategy", command=lambda: delete_item(selected_key.get()),
+button_delete_strategy = Button(frame_my_srategies, text="Delete strategy",
+                                command=lambda: delete_item(selected_key.get()),
                                 background='#f28174')
 
 # Labels
-label_url = Label(root, text=button_text_freqtrade_ui, fg='blue', cursor='hand2')
-label_url_strategies = Label(root, text=button_text_freqtrade_strategy, fg='blue', cursor='hand2')
+label_url = Label(frame_config, text=button_text_freqtrade_ui, fg='blue', cursor='hand2')
+label_url_strategies = Label(frame_config, text=button_text_freqtrade_strategy, fg='blue', cursor='hand2')
 # label_date = Label(root, text="Date from (20221023):")
 label_version = Label(root, textvariable=version_var)
 if docker_condition:
-    label_docker = Label(root, textvariable=docker_run, fg="green", font=['Arial', 15, 'bold'])
+    label_docker = Label(frame_backtest, textvariable=docker_run, fg="green", font=['Arial', 10, 'bold'])
 else:
-    label_docker = Label(root, textvariable=docker_run, fg="red", font=['Arial', 15, 'bold'])
+    label_docker = Label(frame_backtest, textvariable=docker_run, fg="red", font=['Arial', 10, 'bold'])
 
 if freqtrade_condition:
-    label_freqtrade = Label(root, textvariable=freqtrade_run, fg="green", font=['Arial', 15, 'bold'])
+    label_freqtrade = Label(frame_backtest, textvariable=freqtrade_run, fg="green", font=['Arial', 10, 'bold'])
 else:
-    label_freqtrade = Label(root, textvariable=freqtrade_run, fg="red", font=['Arial', 15, 'bold'])
+    label_freqtrade = Label(frame_backtest, textvariable=freqtrade_run, fg="red", font=['Arial', 10, 'bold'])
+
 # Comboboxes
-combo = Combobox(root, textvariable=value_rip_menu, values=timeframes)
-combobox_strategies = Combobox(root, textvariable=selected_strategy, values=strategy_list)
-combobox_keys = Combobox(root, textvariable=selected_key, values=list(strategy_file_dist.keys()))
-combo_strategy = Combobox(root, textvariable=value_rip_menu, values=timeframes)
-combobox_strategies_hyperopt = Combobox(root, textvariable=selected_strategy, values=strategy_list)
-combo_strategy_hyperopt = Combobox(root, textvariable=value_rip_menu, values=timeframes)
+combo = Combobox(frame_stock_data, textvariable=value_rip_menu, values=timeframes)
+combobox_strategies = Combobox(frame_backtest, textvariable=selected_strategy, values=strategy_list)
+combobox_keys = Combobox(frame_my_srategies, textvariable=selected_key, values=list(strategy_file_dist.keys()))
+combo_strategy = Combobox(frame_backtest, textvariable=value_rip_menu, values=timeframes)
+combobox_strategies_hyperopt = Combobox(frame_hyperopt, textvariable=selected_strategy, values=strategy_list)
+combo_strategy_hyperopt = Combobox(frame_hyperopt, textvariable=value_rip_menu, values=timeframes)
 
 # my_version()
 # Frame Docker operations
@@ -453,48 +491,50 @@ button_docker_compose_down.grid(row=1, column=1, sticky="we", padx=3, pady=3)
 button_restart.grid(row=1, column=2, sticky="we", padx=3, pady=3)
 button_default_configs.grid(row=1, column=3, sticky="we", padx=3, pady=3)
 
-label_docker.grid(row=0, column=3)
-label_freqtrade.grid(row=1, column=3)
+label_docker.grid(row=0, column=2)
+label_freqtrade.grid(row=0, column=3)
 
-# ROW 2
-label_url.grid(row=2, column=0)
-button_open_config.grid(row=2, column=1)
-button_open_strategy.grid(row=2, column=2)
-label_url_strategies.grid(row=2, column=3)
+# Frame Config zone
+# ROW 0
+label_url.grid(row=0, column=0, sticky="we", padx=3, pady=3)
+label_url_strategies.grid(row=0, column=1, sticky="we", padx=3, pady=3)
+button_open_config.grid(row=0, column=2, sticky="we", padx=3, pady=3)
+button_open_strategy.grid(row=0, column=3, sticky="we", padx=3, pady=3)
 
 # label_date.grid(row=3, column=0)
 
 # ROW 3
-entry_date.grid(row=3, column=0)
-button_date_from.grid(row=3, column=1)
-combo.grid(row=3, column=2)
-button_get_data.grid(row=3, column=3)
+entry_date.grid(row=0, column=0, sticky="we", padx=3)
+button_date_from.grid(row=0, column=1, sticky="w", padx=3, pady=3)
+combo.grid(row=0, column=2, sticky="we", padx=3)
+button_get_data.grid(row=0, column=3, sticky="w", padx=3, pady=3)
 entry_date_backtesting.insert(END, button_text_date)
 
 # ROW 4
-combobox_keys.grid(row=4, column=0)
-button_test.grid(row=4, column=1)
-button_delete_strategy.grid(row=4, column=2)
-entry_new_strategy_name.grid(row=4, column=3)
-button_add_new_strategy.grid(row=4, column=4)
+combobox_keys.grid(row=0, column=0, sticky="we", padx=3)
+button_test.grid(row=0, column=1, sticky="w", padx=3)
+button_delete_strategy.grid(row=0, column=2, padx=3)
+entry_new_strategy_name.grid(row=0, column=3, sticky="we", padx=3)
+button_add_new_strategy.grid(row=0, column=4, sticky="w", padx=3)
 
 # ROW 5
-combobox_strategies.grid(row=5, column=0)
-entry_date_backtesting.grid(row=5, column=1)
-button_date_backtest.grid(row=5, column=2)
-combo_strategy.grid(row=5, column=3)
-entry_amount_backtesting.grid(row=5, column=4)
-button_backtesting.grid(row=5, column=5)
-entry_amount_backtesting.insert(END, '700')
+combobox_strategies.grid(row=0, column=0, padx=3, pady=3, sticky="we")
+button_replace_docker.grid(row=0, column=1, padx=3, pady=3)
 
 # ROW 6
-button_replace_docker.grid(row=6, column=0)
+entry_date_backtesting.grid(row=1, column=0, padx=3, pady=3, sticky="we")
+button_date_backtest.grid(row=1, column=1, padx=3, pady=3, sticky="w")
+combo_strategy.grid(row=1, column=2, padx=3, pady=3, sticky="we")
+entry_amount_backtesting.grid(row=1, column=3, padx=3, pady=3, sticky="we")
+button_backtesting.grid(row=1, column=4, padx=3, pady=3, sticky="w")
+entry_amount_backtesting.insert(END, '700')
+combo_strategy.insert(END, 'Timeframe')
 
 # ROW 7
-combobox_strategies_hyperopt.grid(row=7, column=0)
-combo_strategy_hyperopt.grid(row=7, column=1)
-entry_hyperopt_epoch.grid(row=7, column=2)
-button_hyperopt.grid(row=7, column=3)
+combobox_strategies_hyperopt.grid(row=0, column=0, padx=3, pady=3, sticky="we")
+combo_strategy_hyperopt.grid(row=0, column=1, padx=3, pady=3, sticky="we")
+entry_hyperopt_epoch.grid(row=0, column=2, padx=3, pady=3, sticky="we")
+button_hyperopt.grid(row=0, column=3, padx=3, pady=3, sticky="we")
 entry_hyperopt_epoch.insert(END, 'Epoch int value')
 
 label_url.bind('<1>', open_link)

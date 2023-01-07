@@ -1,7 +1,7 @@
 # pip install pyinstaller
 # pyinstaller main.py
 # pyinstaller --hidden-import babel.numbers myscript.py
-main_window_geometry = "800x500"
+main_window_geometry = "710x390+1400+200"
 title = "Freqinter v1.0"
 folder_path = 'c:/ft_userdata'
 work_directory = 'C:\\ft_userdata\\'
