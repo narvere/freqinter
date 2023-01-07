@@ -18,7 +18,7 @@ strategy_list = []
 # Dictionary with my strategy file names as key and my strategy file path as value
 strategy_file_dist = {}
 
-
+# test
 def get_stock_data():
     """
     Get quotes data from the stock exchange
