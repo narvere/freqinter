@@ -3,3 +3,4 @@ venv/
 dictionary.txt
 .idea
 *.db
+config.json
