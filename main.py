@@ -338,6 +338,30 @@ def delete_item(name):
     # print(file_path, "Deleted")
 
 
+keys = list(strategy_file_dist.keys())
+
+
+def delete_file(name):
+    # Delete the selected item from the ComboBox
+
+    file_path = folder_path + "/user_data/strategies/" + name
+    os.remove(file_path)
+
+
+def delete_item666():
+    # Get the currently selected item from the combobox
+    current_item = combobox_keys.get()
+
+    # Remove the item from the list of keys
+    keys.remove(current_item)
+    delete_file(current_item)
+
+    # Remove the key-value pair from the dictionary
+    del strategy_file_dist[current_item]
+
+    # Update the values in the combobox
+    combobox_keys["values"] = keys
+
 
 # def delete_strategy():
 #     pass
@@ -454,7 +478,7 @@ button_hyperopt = Button(frame_hyperopt, text="Hyperopt", command=hyperopt)
 button_add_new_strategy = Button(frame_my_srategies, text=button_text_add_atrategy,
                                  command=lambda: add_strategy(entry_new_strategy_name.get()))
 button_delete_strategy = Button(frame_my_srategies, text=button_test_del_strategy,
-                                command=lambda: delete_item(selected_key.get()),
+                                command=delete_item666,
                                 background='#f28174')
 
 # Labels
@@ -472,10 +496,12 @@ if freqtrade_condition:
 else:
     label_freqtrade = Label(frame_backtest, textvariable=freqtrade_run, fg="red", font=['Arial', 10, 'bold'])
 
+get_my_strategies_dict()
+keys = list(strategy_file_dist.keys())
 # Comboboxes
 combo = Combobox(frame_stock_data, textvariable=value_rip_menu, values=timeframes)
 combobox_strategies = Combobox(frame_backtest, textvariable=selected_strategy, values=strategy_list)
-combobox_keys = Combobox(frame_my_srategies, textvariable=selected_key, values=list(strategy_file_dist.keys()))
+combobox_keys = Combobox(frame_my_srategies, textvariable=selected_key, values=keys)
 combo_strategy = Combobox(frame_backtest, textvariable=value_rip_menu, values=timeframes)
 combobox_strategies_hyperopt = Combobox(frame_hyperopt, textvariable=selected_strategy, values=strategy_list)
 combo_strategy_hyperopt = Combobox(frame_hyperopt, textvariable=value_rip_menu, values=timeframes)
