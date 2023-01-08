@@ -327,6 +327,7 @@ def add_strategy(name):
 
         with open(folder_path + "/user_data/strategies/" + name + ".py", 'w') as f:
             f.writelines(lines)
+        # combobox_keys.insert(name)
 
 
 def delete_item(name):
@@ -348,12 +349,18 @@ def delete_file(name):
     os.remove(file_path)
 
 
-def delete_item666():
+
+
+
+def delete_strategy():
     # Get the currently selected item from the combobox
     current_item = combobox_keys.get()
+    # combobox_keys.delete(current_item)
 
     # Remove the item from the list of keys
     keys.remove(current_item)
+
+    # Remove strategy file from working directory
     delete_file(current_item)
 
     # Remove the key-value pair from the dictionary
@@ -463,6 +470,7 @@ button_default_configs = Button(frame_docker, text=button_default_configs, comma
                                 background='#92f095')
 button_reset_all = Button(frame_docker, text=button_reset_all, command=create_directory, background='#f28174')
 button_restart = Button(frame_docker, text=button_text_restart_docker, command=restart_freqtrade)
+
 button_open_config = Button(frame_config, text=button_text_config_file, command=lambda: open_config_file(link_config))
 button_open_strategy = Button(frame_config, text=button_text_sample_strategy,
                               command=lambda: open_config_file(link_strategy))
@@ -478,7 +486,7 @@ button_hyperopt = Button(frame_hyperopt, text="Hyperopt", command=hyperopt)
 button_add_new_strategy = Button(frame_my_srategies, text=button_text_add_atrategy,
                                  command=lambda: add_strategy(entry_new_strategy_name.get()))
 button_delete_strategy = Button(frame_my_srategies, text=button_test_del_strategy,
-                                command=delete_item666,
+                                command=delete_strategy,
                                 background='#f28174')
 
 # Labels
@@ -505,7 +513,7 @@ combobox_keys = Combobox(frame_my_srategies, textvariable=selected_key, values=k
 combo_strategy = Combobox(frame_backtest, textvariable=value_rip_menu, values=timeframes)
 combobox_strategies_hyperopt = Combobox(frame_hyperopt, textvariable=selected_strategy, values=strategy_list)
 combo_strategy_hyperopt = Combobox(frame_hyperopt, textvariable=value_rip_menu, values=timeframes)
-
+combobox_keys.set("Choose an item")
 # my_version()
 # Frame Docker operations
 # ROW 0
@@ -525,7 +533,7 @@ label_docker.grid(row=0, column=2)
 label_freqtrade.grid(row=0, column=3)
 
 # Frame Config zone
-# ROW 0
+# ROW 2
 label_url.grid(row=0, column=0, sticky="we", padx=3, pady=3)
 label_url_strategies.grid(row=0, column=1, sticky="we", padx=3, pady=3)
 button_open_config.grid(row=0, column=2, sticky="we", padx=3, pady=3)
@@ -533,6 +541,7 @@ button_open_strategy.grid(row=0, column=3, sticky="we", padx=3, pady=3)
 
 # label_date.grid(row=3, column=0)
 
+# Frame Stock data
 # ROW 3
 entry_date.grid(row=0, column=0, sticky="we", padx=3)
 button_date_from.grid(row=0, column=1, sticky="w", padx=3, pady=3)
@@ -540,6 +549,7 @@ combo.grid(row=0, column=2, sticky="we", padx=3)
 button_get_data.grid(row=0, column=3, sticky="w", padx=3, pady=3)
 entry_date_backtesting.insert(END, button_text_date)
 
+# Frame My strategies
 # ROW 4
 combobox_keys.grid(row=0, column=0, sticky="we", padx=3)
 button_test.grid(row=0, column=1, sticky="w", padx=3)
@@ -547,9 +557,12 @@ button_delete_strategy.grid(row=0, column=2, padx=3)
 entry_new_strategy_name.grid(row=0, column=3, sticky="we", padx=3)
 button_add_new_strategy.grid(row=0, column=4, sticky="w", padx=3)
 
+# Frame Backtest
 # ROW 5
 combobox_strategies.grid(row=0, column=0, padx=3, pady=3, sticky="we")
 button_replace_docker.grid(row=0, column=1, padx=3, pady=3)
+label_url.bind('<1>', open_link)
+label_url_strategies.bind('<1>', open_link0)
 
 # ROW 6
 entry_date_backtesting.grid(row=1, column=0, padx=3, pady=3, sticky="we")
@@ -560,14 +573,12 @@ button_backtesting.grid(row=1, column=4, padx=3, pady=3, sticky="w")
 entry_amount_backtesting.insert(END, '700')
 combo_strategy.insert(END, 'Timeframe')
 
+# Frame Hyperopt
 # ROW 7
 combobox_strategies_hyperopt.grid(row=0, column=0, padx=3, pady=3, sticky="we")
 combo_strategy_hyperopt.grid(row=0, column=1, padx=3, pady=3, sticky="we")
 entry_hyperopt_epoch.grid(row=0, column=2, padx=3, pady=3, sticky="we")
 button_hyperopt.grid(row=0, column=3, padx=3, pady=3, sticky="we")
 entry_hyperopt_epoch.insert(END, 'Epoch int value')
-
-label_url.bind('<1>', open_link)
-label_url_strategies.bind('<1>', open_link0)
 
 root.mainloop()
