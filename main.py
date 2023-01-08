@@ -13,6 +13,8 @@ import docker
 import babel.numbers  # do not delete!
 import shutil
 
+# pip install tkinter-tooltip
+
 # List of my strategy names
 strategy_list = []
 # Dictionary with my strategy file names as key and my strategy file path as value
@@ -331,8 +333,10 @@ def delete_item(name):
     # Delete the selected item from the ComboBox
 
     file_path = folder_path + "/user_data/strategies/" + name
-    print(file_path)
     os.remove(file_path)
+    # print(name)
+    # print(file_path, "Deleted")
+
 
 
 # def delete_strategy():
@@ -447,9 +451,9 @@ button_replace_docker = Button(frame_backtest, text=button_text_replace_docker,
 
 button_date_backtest = Button(frame_backtest, text=button_text_date, command=open_setup_window)
 button_hyperopt = Button(frame_hyperopt, text="Hyperopt", command=hyperopt)
-button_add_new_strategy = Button(frame_my_srategies, text="Add new strategy",
+button_add_new_strategy = Button(frame_my_srategies, text=button_text_add_atrategy,
                                  command=lambda: add_strategy(entry_new_strategy_name.get()))
-button_delete_strategy = Button(frame_my_srategies, text="Delete strategy",
+button_delete_strategy = Button(frame_my_srategies, text=button_test_del_strategy,
                                 command=lambda: delete_item(selected_key.get()),
                                 background='#f28174')
 

@@ -1,5 +1,6 @@
 import json
 from tkinter import Label, Tk, Entry, END
+from tktooltip import ToolTip
 
 # Open the JSON file
 with open(r'C:\Users\Admin\PycharmProjects\frreqinter\config.json', 'r') as f:
@@ -24,6 +25,15 @@ label_unfilledtimeout_entry = Label(root, text="unfilledtimeout.entry ")
 label_unfilledtimeout_exit = Label(root, text="unfilledtimeout.exit")
 label_unfilledtimeout_exexit_timeout_countit = Label(root, text="unfilledtimeout.exexit_timeout_countit")
 label_unfilledtimeout_unit = Label(root, text="unfilledtimeout.unit")
+
+ToolTip(label_max_open_trades,
+        msg="Required. Number of open trades your bot is allowed to have. Only one open trade per pair is possible, "
+            "so the length of your pairlist is another limitation that can apply. If -1 then it is ignored "
+            "(i.e. potentially unlimited open trades, limited by the pairlist)"
+            "Datatype: Positive integer or -1.")
+
+ToolTip(label_stake_currency,
+        msg="Required. Crypto-currency used for trading. Datatype: String")
 
 label_max_open_trades.grid(row=0, column=0)
 label_stake_currency.grid(row=1, column=0)

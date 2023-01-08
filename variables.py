@@ -28,3 +28,5 @@ button_text_restart_docker = "Docker-compose Down & UP"
 button_text_freqtrade_ui = 'Freqtrade UI'
 button_text_freqtrade_strategy = 'freqtrade-strategies'
 timeframes = ['1s', '1m', '3m', '5m', '15m', '30m', '1h', '2h', '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M']
+button_test_del_strategy = "Delete strategy"
+button_text_add_atrategy = "Add new strategy"
