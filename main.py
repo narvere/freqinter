@@ -19,6 +19,10 @@ import shutil
 strategy_list = []
 # Dictionary with my strategy file names as key and my strategy file path as value
 strategy_file_dist = {}
+root = Tk()
+root.geometry(main_window_geometry)
+root.resizable(width=False, height=False)
+root.title(title)
 
 
 # test
@@ -310,24 +314,34 @@ def hyperopt():
 
 
 def add_strategy(name):
+    global root
     if os.path.exists(folder_path + "/user_data/strategies/" + name + ".py"):
         # File exists
         print("File exists")
     else:
-        # File does not exist
+        # Create a new copy of file strategy
         shutil.copy(link_strategy, folder_path + "/user_data/strategies/" + name + ".py")
         # get_my_strategies()
         # get_my_strategies_dict()
         print(f"Стратегия {name} создана!")
 
+        # Open and read file
         with open(folder_path + "/user_data/strategies/" + name + ".py", 'r') as f:
             lines = f.readlines()
 
+        # Find line 19 and change a strategy name
         lines[19] = f'class {name}(IStrategy):\n'
 
+        # Write new data to file
         with open(folder_path + "/user_data/strategies/" + name + ".py", 'w') as f:
             f.writelines(lines)
-        # combobox_keys.insert(name)
+            # Update the values in the combobox
+            combobox_keys["values"] = keys
+            print(combobox_keys["values"])
+        root.destroy()
+        # root = Tk()
+        #
+        # root.mainloop()
 
 
 def delete_item(name):
@@ -347,9 +361,6 @@ def delete_file(name):
 
     file_path = folder_path + "/user_data/strategies/" + name
     os.remove(file_path)
-
-
-
 
 
 def delete_strategy():
@@ -373,10 +384,6 @@ def delete_strategy():
 # def delete_strategy():
 #     pass
 
-root = Tk()
-root.geometry(main_window_geometry)
-root.resizable(width=False, height=False)
-root.title(title)
 
 # Frames
 frame_docker = LabelFrame(root, text="Docker operations")
@@ -504,7 +511,7 @@ if freqtrade_condition:
 else:
     label_freqtrade = Label(frame_backtest, textvariable=freqtrade_run, fg="red", font=['Arial', 10, 'bold'])
 
-get_my_strategies_dict()
+# get_my_strategies_dict()
 keys = list(strategy_file_dist.keys())
 # Comboboxes
 combo = Combobox(frame_stock_data, textvariable=value_rip_menu, values=timeframes)
